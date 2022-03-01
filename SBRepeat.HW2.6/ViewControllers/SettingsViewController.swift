@@ -9,6 +9,8 @@ import UIKit
 
 class SettingsViewController: UIViewController {
     
+    // MARK: - IBOutlets
+    
     @IBOutlet var colorView: UIView!
     
     @IBOutlet var redLabelValue: UILabel!
@@ -23,8 +25,12 @@ class SettingsViewController: UIViewController {
     @IBOutlet var greenSlider: UISlider!
     @IBOutlet var blueSlider: UISlider!
     
+    // MARK: - Public Properties
+    
     var miniViewColor: UIColor!
     var delegate: MainViewControllerDelegate!
+    
+    // MARK: - Override Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +47,14 @@ class SettingsViewController: UIViewController {
         blueValueTF.delegate = self
         
         setupView()
+        
+        addDoneButton(textField: redValueTF)
+        addDoneButton(textField: greenValueTF)
+        addDoneButton(textField: blueValueTF)
 
     }
+    
+    // MARK: - IBActions
     
     @IBAction func sliderChangeValue(_ sender: UISlider) {
         
@@ -65,6 +77,8 @@ class SettingsViewController: UIViewController {
         delegate.setNewColor(from: colorView.backgroundColor ?? .white)
         dismiss(animated: true)
     }
+    
+    // MARK: - Private Methods
     
     private func setupView() {
         let ciColorFormMainView = CIColor(color: miniViewColor)
@@ -98,8 +112,61 @@ class SettingsViewController: UIViewController {
 
 }
 
+// MARK: - Extensions
+
 extension SettingsViewController: UITextFieldDelegate {
     
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let text = textField.text {
+            if let valueFromText = Float(text){
+                if valueFromText < 1 {
+                    switch textField {
+                    case redValueTF:
+                        redSlider.value = valueFromText
+                        redLabelValue.text = String(valueFromText)
+                    case greenValueTF:
+                        greenSlider.value = valueFromText
+                        greenLabelValue.text = String(valueFromText)
+                    default:
+                        blueSlider.value = valueFromText
+                        blueValueLabel.text = String(valueFromText)
+                    }
+                } else {
+                    showAlert(with: "Wrong format", and: "Please, input value in range from 0 to 1!")
+                    textField.text = ""
+                }
+            }
+            setColor()
+        }
+    }
     
+   private func addDoneButton(textField: UITextField) {
+        
+        let keypadToolbar: UIToolbar = UIToolbar()
+        
+        keypadToolbar.items=[
+            UIBarButtonItem(
+                barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace,
+                target: self,
+                action: nil
+            ),
+            UIBarButtonItem(
+                title: "Done",
+                style: UIBarButtonItem.Style.done,
+                target: textField,
+                action: #selector(UITextField.resignFirstResponder)
+            )
+        ]
+        keypadToolbar.sizeToFit()
+        textField.inputAccessoryView = keypadToolbar
+    }
+    
+    private func showAlert(with title: String, and message: String) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(okAction)
+        present(alert, animated: true)
+    }
     
 }
