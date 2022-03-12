@@ -27,9 +27,9 @@ class SettingsViewController: UIViewController {
     
     // MARK: - Public Properties
     
+    
     var miniViewColor: UIColor!
     var delegate: MainViewControllerDelegate!
-    
     // MARK: - Override Methods
     
     override func viewDidLoad() {
@@ -40,7 +40,6 @@ class SettingsViewController: UIViewController {
         
         redSlider.minimumTrackTintColor = .red
         greenSlider.minimumTrackTintColor = .green
-        blueSlider.minimumTrackTintColor = .blue
         
         redValueTF.delegate = self
         greenValueTF.delegate = self

@@ -13,17 +13,9 @@ protocol MainViewControllerDelegate {
 
 class MainViewController: UIViewController {
     
-    var mainViewColor = UIColor(red: 0.5, green: 0.3, blue: 0.2, alpha: 1)
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.layer.backgroundColor = mainViewColor.cgColor
-        
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let settingsVC = segue.destination as? SettingsViewController else {return}
-        settingsVC.miniViewColor = mainViewColor
+        settingsVC.miniViewColor = view.backgroundColor
         settingsVC.delegate = self
     }
 
@@ -31,8 +23,7 @@ class MainViewController: UIViewController {
 
 extension MainViewController: MainViewControllerDelegate {
     func setNewColor(from color: UIColor) {
-        mainViewColor = color
-        view.layer.backgroundColor = mainViewColor.cgColor
+        view.backgroundColor = color
     }
 }
 
